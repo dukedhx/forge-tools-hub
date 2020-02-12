@@ -137,7 +137,7 @@
       </b-step-item>
       <slot></slot>
       <template slot="navigation" slot-scope="{ previous, next }">
-        <nav class="level">
+        <nav class="level is-mobile">
           <div class="level-left">
             <div class="level-item">
               <b-button

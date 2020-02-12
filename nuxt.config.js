@@ -60,9 +60,7 @@ module.exports = {
     //importScripts:['service-worker.js'],
     cachingExtensions: '@/plugins/service-worker.js'
 
-  }, manifest: {
-      display: 'browser'
-    }
+  }
   },
   /*
   ** Build configuration

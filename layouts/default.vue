@@ -1,5 +1,28 @@
 <template>
   <section class="main-container">
+    <b-modal :active.sync="disclaimerModal">
+      <b-message title="Disclaimer" type="is-info" :closable="false">
+        <pre>
+          /////////////////////////////////////////////////////////////////////
+          // Copyright (c) 2020. All rights reserved
+          // Written by Bryan Huang, Forge Partner Development, Autodesk
+          //
+          // Permission to use, copy, modify, and distribute this software in
+          // object code form for any purpose and without fee is hereby granted,
+          // provided that this copyright notice appears in all copies and
+          // that both that copyright notice and the limited warranty and
+          // restricted rights notice below appear in all supporting
+          // documentation.
+          //
+          // THE AUTHOR PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+          // THE AUTHOR SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+          // MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE. THE AUTHOR
+          // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+          // UNINTERRUPTED OR ERROR FREE.
+          /////////////////////////////////////////////////////////////////////
+        </pre>
+      </b-message>
+    </b-modal>
     <b-modal :active.sync="showSettings">
       <b-message title="Settings" type="is-info" :closable="false">
         <b-field
@@ -32,9 +55,10 @@
         </div>
         <div
           class="card-content"
-          style="bottom: 5px;
-    background: rgba(255,255,255,0.8);
-    position: absolute;"
+          style="bottom: 5px;overflow-y: scroll;
+                 max-height: 100%;
+                 background: rgba(255,255,255,0.8);
+                 position: absolute;"
         >
           <div class="media">
             <div class="media-left">
@@ -56,31 +80,35 @@
           </div>
 
           <div class="content">
-            Bryan Huang is a Developer Advocate with Autodesk Developer Network
-            and is a certified AWS/Azure Solutions Architect/Developer and
-            VMware Practitioner. His other qualifications include PMP, PMI-ACP,
-            NAATI Certified Intepreter and he is based in Shanghai, China (by
-            day) & Melbourne, Australia (for winter seasons ;p).
-            <div style="float:right">
-              <a href="https://github.com/dukedhx/" target="_blank"
-                ><b-icon icon="github-box"></b-icon
-              ></a>
-              <a
-                href="https://forge.autodesk.com/author/bryan-huang"
-                target="_blank"
-                ><b-icon icon="blogger"></b-icon
-              ></a>
-              <a
-                href="https://www.linkedin.com/in/bryan-huang-1447b862"
-                target="_blank"
-                ><b-icon icon="linkedin"></b-icon
-              ></a>
-              <a
-                href="https://stackoverflow.com/users/3006933/brian-huang"
-                target="_blank"
-                ><b-icon icon="facebook"></b-icon
-              ></a>
-            </div>
+            <section>
+              Bryan Huang is a Developer Advocate with Autodesk Developer
+              Network and is a certified AWS/Azure Solutions Architect/Developer
+              and VMware Practitioner. His other qualifications include PMP,
+              PMI-ACP, NAATI Certified Intepreter and he is based in Shanghai,
+              China (by day) & Melbourne, Australia (for winter seasons ;p).
+            </section>
+            <section>
+              <div style="float:right">
+                <a href="https://github.com/dukedhx/" target="_blank"
+                  ><b-icon icon="github-box"></b-icon
+                ></a>
+                <a
+                  href="https://forge.autodesk.com/author/bryan-huang"
+                  target="_blank"
+                  ><b-icon icon="blogger"></b-icon
+                ></a>
+                <a
+                  href="https://www.linkedin.com/in/bryan-huang-1447b862"
+                  target="_blank"
+                  ><b-icon icon="linkedin"></b-icon
+                ></a>
+                <a
+                  href="https://stackoverflow.com/users/3006933/brian-huang"
+                  target="_blank"
+                  ><b-icon icon="facebook"></b-icon
+                ></a>
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -162,6 +190,9 @@ html {
 }
 
 .navigation-header {
+  &::v-deep .navbar-burger {
+    display: none;
+  }
   background: rgba(0, 0, 0, 0.3);
   position: relative;
   .navbar-brand .navbar-item,
@@ -363,6 +394,7 @@ export default {
   data() {
     return {
       showAbout: false,
+      disclaimerModal: false,
       bgInit: false,
       animatedBackground: false,
       showSettings: false
@@ -394,7 +426,7 @@ export default {
       type: 'is-warning',
       position: 'is-bottom',
       actionText: 'Read More',
-      onAction: () => this.$buefy.dialog.alert('233')
+      onAction: () => (this.disclaimerModal = true)
     })
   }
 }
