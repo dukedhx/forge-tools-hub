@@ -56,7 +56,7 @@
             v-if="showContentLengthInput && !isHeaderLoading"
             :type="`${isContentLengthValid ? 'is-success' : 'is-danger'}`"
             :message="
-              `Size of object to download: ${headerObject['Content-Length']} bytes`
+              `Size of object to download: ${headerObject['content-length']} bytes`
             "
           >
             <b-input
@@ -265,7 +265,7 @@ export default {
       } catch (err) {
         this.showAlertMessage(err)
       } finally {
-        this.contentLength = this.headerObject['Content-Length']
+        this.contentLength = this.headerObject['content-length']
         this.showContentLengthInput = !this.isContentLengthValid
         this.isHeaderLoading = false
       }
@@ -286,7 +286,7 @@ export default {
         await Promise.all(
           tools
             .getChunkHeadObjects(
-              this.headerObject['Content-Length'],
+              this.headerObject['content-length'],
               this.chunklength * 1000000
             )
             .map(e => {
@@ -352,7 +352,7 @@ export default {
     handleInputContentLength(value) {
       if (value > 0)
         this.headerObject = Object.assign(this.headerObject, {
-          'Content-Length': value
+          'content-length': value
         })
     }
   },
@@ -375,8 +375,8 @@ export default {
     isContentLengthValid() {
       if (this.contentLength > 0) {
         this.headers = Object.assign({}, this.headers, {
-          'Content-Length': tools.bytesToSize(
-            this.headerObject['Content-Length']
+          'content-length': tools.bytesToSize(
+            this.headerObject['content-length']
           )
         })
         return true

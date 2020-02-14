@@ -58,13 +58,13 @@
             :message="
               `${
                 chunklengthValid
-                  ? `Download will proceed in chunks of ${chunklength} MB ...`
+                  ? `Upload will proceed in chunks of ${chunklength} MB ...`
                   : 'Put in an zero or postive integer smaller than the content length ...'
               }`
             "
           >
             <b-input
-              placeholder="Enter chunk size in MB to download in chunks or 0 for non-partial download ..."
+              placeholder="Enter chunk size in MB 0 for non-partial upload, must be larger than 2MB when uploading to Forge ..."
               @input="handleChunkInput"
               v-model="chunklength"
               expanded
@@ -134,7 +134,7 @@
                       ? 'Error! Click for details'
                       : props.row.status == 0
                       ? 'Loading ...'
-                      : 'Click to download'
+                      : 'Success'
                   }`
                 "
                 :type="
@@ -147,12 +147,8 @@
                   }`
                 "
               >
-                <b-button
-                  v-if="props.row.status == 1"
-                  @click="download(props.row.data, props.index)"
-                  type="is-text"
-                  ><b-icon icon="download" type="is-success"></b-icon
-                ></b-button>
+               <b-icon  v-if="props.row.status == 1" icon="check-circle" type="is-success"></b-icon
+                >
                 <b-button
                   v-if="props.row.status == -1"
                   @click="showAlertDialogue(props.row.message)"
@@ -196,7 +192,6 @@ import tools from '../components/Tools'
 import Loader from '../components/Loader'
 const defaultHeaders = {
   'session-id': ':sessionId',
-  'Content-Length': ':length',
   'Content-Range': 'bytes :start-:end/:contentLength'
 }
 export default {
@@ -267,10 +262,9 @@ export default {
                     })
                   )
                 : this.customHeaders
-              console.log(range)
               const uploadEntry = {
                 status: 0,
-                range: range['Content-Range'] || 'Full Download',
+                range: range['Content-Range'] || 'Unchunked Upload',
                 size: tools.bytesToSize(e ? e.length : this.contentLength)
               }
               this.uploadTableData.push(uploadEntry)
@@ -278,7 +272,7 @@ export default {
                 this.urn.startsWith('http') ? 'putAsync' : 'putObjectAsync'
               ](
                 this.urn,
-                e ? this.uploadFile.slice(e.start, e.end) : this.uploadFile,
+                e ? this.uploadFile.slice(e.start, e.end+1) : this.uploadFile,
                 range
               )
                 .then(() => (uploadEntry.status = 1))

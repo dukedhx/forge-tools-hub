@@ -1,10 +1,15 @@
+[![Build](https://travis-ci.org/dukedhx/forge-tools-hub.svg?branch=master)](https://travis-ci.org/dukedhx/forge-tools-hub)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://opensource.org/licenses/MIT)
 [![Standard](https://img.shields.io/badge/Standard-Style-green.svg)](https://github.com/standard/standard)
 [![Autodesk Forge](https://img.shields.io/badge/Autodesk-Forge-orange.svg)](https://forge.autodesk.com/)
 
-## Live Demo
+## Links:
 
-https://bxfmy.sse.codesandbox.io/
+- Production: https://forge-tools-hub.now.sh/
+- Playground: https://codesandbox.io/s/github/dukedhx/forge-tools-hub/tree/master
+- Code: https://github.com/dukedhx/forge-tools-hub/
+- Blog: https://forge.autodesk.com/blog/meet-forge-tools-hub-jamstackserverless-tools-download-derivatives-svf-and-view-models-offline
+- Other Intructions: https://hackmd.io/RRLAzAgURHCBE5RMN3ZfZA
 
 ## Description
 
@@ -16,11 +21,17 @@ A curated collection of Forge tools with boilerplate code to build SSR Forge app
 - Viewer Options Generator: Generate all possibile Viewer init/load options such as transform metrics easily ...
 - Tutorial/Playground: Curated collection of interactive Forge tutorials & playgrounds
 
+You may also find sample code here to:
+
+- Develop Forge Viewer apps with Vue 
+- Advanced usage of Workbox
+- Download SVF derivatives
+
 ## Prerequisites
 
 - Install [Node.js](https://nodejs.org/en/download/)
 
-## Live Demo
+## Demo
 
 ![pwa](assets/pwa.gif)
 
@@ -36,7 +47,21 @@ A curated collection of Forge tools with boilerplate code to build SSR Forge app
 
 - `npm run generate`
 
-## //TODO
+## Project Structure
+
+```
+|
+|- assets 
+|- components     // Vue and JS components
+|- layouts	      // Nuxt layout views
+|- middleware	    
+|- pages	        // Vue pages
+|- plugins	      // Service worker and lazy load plugin
+|- server
+|- static
+|- store          // Vuex store
+```
+
 
 ## License
 
