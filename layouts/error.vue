@@ -1,10 +1,15 @@
 <template>
   <animated-container>
-    <b-message :closable="false" type="is-danger" title="Error occurred!">
+    <b-message
+      class="errorMessage"
+      :closable="false"
+      type="is-danger"
+      title="Error occurred!"
+    >
       <h1 v-if="error.statusCode === 404">Page not found</h1>
       <section v-else>
         <h1>An error occurred:</h1>
-        <pre style="width:90%">{{ error }}</pre>
+        <pre>{{ error }}</pre>
       </section>
       <nuxt-link to="/">Go Home</nuxt-link> |
       <a href="https://github.com/dukedhx/forge-tools-hub" target="_blank"
@@ -13,7 +18,13 @@
     </b-message>
   </animated-container>
 </template>
-
+<style lang="scss" scoped>
+.errorMessage {
+  &::v-deep .media-content {
+    width: 100%;
+  }
+}
+</style>
 <script>
 import AnimatedContainer from '../components/AnimatedContainer'
 

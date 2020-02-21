@@ -1,5 +1,5 @@
 <template>
-  <section class="animated-section">
+  <section class="animated-section" :style="customStyle">
     <slot></slot>
   </section>
 </template>
@@ -20,6 +20,16 @@
 @keyframes slidein {
   to {
     left: 0;
+    position: initial;
   }
 }
 </style>
+
+<script>
+  export default{
+    props:{
+      customStyle:Object,
+    }
+  }
+
+</script>

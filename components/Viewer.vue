@@ -1,5 +1,7 @@
 <template>
-  <div class="viewerContainer" ref="viewerContainer"></div>
+  <div class="viewerContainer" ref="viewerContainer">
+    <b-loading :active='loader&&!dependencyLoaded' :is-full-page="false"></b-loading>
+  </div>
 </template>
 <style lang="scss" scoped>
 .viewerContainer {
@@ -15,6 +17,7 @@ export default {
     checkURN(urn) {
       if (urn.startsWith('http')) return false
       try {
+        if(!urn.startsWith('urn:adsk.objects:os.object:'))
         atob(urn)
         return true
       } catch (err) {
@@ -50,12 +53,16 @@ export default {
       if (this.active && this.dependencyLoaded)
         this.canLoadModel ? this.loadModel() : this.loadViewer()
     },
+    processURN(urn){
+      return urn.startsWith('urn:adsk.objects:os.object:')? btoa(urn):urn
+    },
     loadModel(urn, guid) {
       urn = urn || this.urn
       guid = guid || this.guid
       this.loaded.push(urn + guid)
       this.checkURN(urn)
-        ? Autodesk.Viewing.Document.load('urn:' + urn, doc =>
+        ? Autodesk.Viewing.Document.load('urn:' + this.processURN(urn), doc => {
+  
             this.viewer
               .loadDocumentNode(
                 doc,
@@ -65,7 +72,8 @@ export default {
               )
               .then(() => this.onModelLoad({ urn, guid }))
               .catch(this.onError)
-          )
+               doc.downloadAecModelData()
+          })
         : this.viewer.loadModel(
             this.urn,
             this.getLoadModelOptions(),
@@ -113,6 +121,9 @@ export default {
     },
     urn: function(val) {
       if (val) this.triggerLoad()
+    },
+    resizeChecker: function(val, old){
+      if (val > old && this.viewer) this.viewer.resize()
     }
   },
   data() {
@@ -139,6 +150,15 @@ export default {
     this.terminate()
   },
   props: {
+    resizeChecker:{
+      type: Number
+    },
+    loader:{
+      type: Boolean
+    },
+    viewerStyle:{
+      type: Object
+    },
     guid: {
       type: String
     },

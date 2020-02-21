@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hapi/hapi": "^18.3.1",
+    "@hscmap/vue-window": "^2.4.2",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/hapi": "^2.2.1",
     "@nuxtjs/pwa": "^3.0.0-0",

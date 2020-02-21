@@ -30,6 +30,9 @@ module.exports = {
   */
   plugins: [
   '~/plugins/loader',
+  '~/plugins/jsonviewer',
+   {src:'~/plugins/vue-window',ssr:false},
+
    //{src:'~/plugins/sw.js',ssr:false},
   ],
   /*
@@ -79,6 +82,12 @@ module.exports = {
     manifestURL: 'https://developer.api.autodesk.com/modelderivative/v2/designdata/:urn/manifest',
     deriviateURL: 'https://developer.api.autodesk.com/modelderivative/v2/designdata/:urn/manifest/:derivativeURN',
     uploadURLResumable: 'https://developer.api.autodesk.com/oss/v2/buckets/:objectKey/resumable',
-    uploadURL: 'https://developer.api.autodesk.com/oss/v2/buckets/:objectKey'
+    uploadURL: 'https://developer.api.autodesk.com/oss/v2/buckets/:objectKey',
+    swaggerUIURL: 'https://unpkg.com/swagger-ui-dist@3.25.0/swagger-ui-bundle.js',
+    swaggerCSSURL: 'https://unpkg.com/swagger-ui-dist@3.25.0/swagger-ui.css',
+    tutorialDataURL:process.env.tutorialDataURL,
+    topicDataURL:process.env.topicDataURL,
+    jsonbinSecret:process.env.jsonbinSecret,
+    hubSwaggerDataURL:process.env.hubSwaggerDataURL,
   }
 }

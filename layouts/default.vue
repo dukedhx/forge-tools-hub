@@ -43,7 +43,7 @@
       </b-message>
     </b-modal>
     <b-modal :active.sync="showAbout">
-      <div class="card" style="position: relative;">
+      <div class="card" style="position: relative;min-height: 250px">
         <div class="card-image">
           <figure class="image">
             <img
@@ -55,7 +55,7 @@
         </div>
         <div
           class="card-content"
-          style="bottom: 5px;overflow-y: scroll;
+          style="bottom: 5px;overflow: auto;
                  max-height: 100%;
                  background: rgba(255,255,255,0.8);
                  position: absolute;"
@@ -229,15 +229,16 @@ html {
 
 .main-container {
   min-height: calc(100vh - 5px);
-  padding-bottom: 30px;
   position: relative;
   .main-content {
+    margin-bottom:0;
     position: relative;
   }
+  .container{padding-bottom:0}
   .corner-footer {
-    position: absolute;
-    bottom: 0;
-    right: 5px;
+    position:absolute;
+    bottom:5px;
+    right:5px
   }
 }
 </style>
