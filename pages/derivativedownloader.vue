@@ -164,10 +164,10 @@
 <script>
 import AnimatedContainer from '../components/AnimatedContainer'
 
-import ServiceClient from '../components/ServiceClient'
-import Zip from '../components/ZipHelper'
+import ServiceClient from '../plugins/ServiceClient'
+import Zip from '../plugins/ZipHelper'
 import 'vue-json-viewer/style.css'
-import tools from '../components/Tools'
+import tools from '../plugins/Tools'
 import Loader from '../components/Loader'
 import StepContainer from '../components/StepContainer'
 export default {

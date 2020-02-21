@@ -181,10 +181,10 @@
 import Vue from 'vue'
 import AnimatedContainer from '../components/AnimatedContainer'
 import Viewer from '../components/Viewer'
-import Zip from '../components/ZipHelper'
+import Zip from '../plugins/ZipHelper'
 import StepContainer from '../components/StepContainer'
-import ServiceWorkerClient from '../components/ServiceWorkerClient'
-import tools from '../components/Tools'
+import ServiceWorkerClient from '../plugins/ServiceWorkerClient'
+import tools from '../plugins/Tools'
 const PwaHelp = Vue.component('PwaHelp', {
   template: `
              <template slot='help-content'>

@@ -10,7 +10,7 @@
             expanded
           >
             <option v-for="tutorial of tutorialData">{{
-              tutorial.title
+              tutorial.fields.title
             }}</option>
           </b-select>
         </b-field>
@@ -22,8 +22,8 @@
           "
         >
           <b-input
-          :loading='isLoadingTutorial'
-          :disabled='isLoadingTutorial'
+            :loading="isLoadingTutorial"
+            :disabled="isLoadingTutorial"
             type="textarea"
             v-model="token"
             placeholder="Access token goes here ..."
@@ -65,7 +65,7 @@
           >
             <p class="card-header-title">
               {{ index + 1 }}.{{ filter.question }}
-              {{ filter.answer ? `- ${filter.answer}` : '' }}
+              {{ filter.answer ? `- ${filter.answer.fields.title}` : '' }}
             </p>
             <a class="card-header-icon">
               <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"> </b-icon>
@@ -79,11 +79,9 @@
                 v-model="filter.answer"
                 expanded
               >
-                <option
-                  v-for="answer of filter.answers"
-                  :value="answer.value || answer.title"
-                  >{{ answer.title }}</option
-                >
+                <option v-for="answer of filter.answers" :value="answer">{{
+                  answer.fields.title
+                }}</option>
               </b-select>
             </div>
           </div>
@@ -92,11 +90,27 @@
           <template slot-scope="props">
             <b-table-column label="Resource">
               <a :href="props.row.url" target="_blank">{{
-                props.row.title || props.row.url
+                props.row.fields.title || props.row.fields.url
               }}</a>
             </b-table-column>
-            <b-table-column label="Type" field="type">
-              {{ props.row.type }}
+            <b-table-column label="Type">
+              {{ props.row.fields.type }}
+            </b-table-column>
+            <b-table-column label="Tags">
+              <b-dropdown hoverable>
+                <b-button type="is-text" slot="trigger" slot-scope="{ active }">
+                  <span>Show Tags</span>
+                  <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
+                </b-button>
+
+                <b-dropdown-item
+                  :key="index"
+                  v-for="(tag, index) of props.row.fields.tags.map(
+                    e => e.fields.title
+                  )"
+                  >{{ tag }}</b-dropdown-item
+                >
+              </b-dropdown>
             </b-table-column>
           </template>
         </b-table>
@@ -288,7 +302,10 @@
           </a>
           <b-collapse class="card" :key="sb" :open="!!step.open">
             <div class="card-content">
-              <div class="content" v-html="step.content"></div>
+              <div
+                class="content"
+                v-html="documentToHtmlString(step.content)"
+              ></div>
             </div>
             <footer class="card-footer">
               <b-button
@@ -402,8 +419,11 @@ import AnimatedContainer from '../components/AnimatedContainer'
 import Quiz from '../components/Quiz'
 import Viewer from '../components/Viewer'
 import ObjectInput from '../components/ObjectInput'
-import tools from '../components/Tools'
-import ServiceClient from '../components/ServiceClient'
+import tools from '../plugins/Tools'
+import ServiceClient from '../plugins/ServiceClient'
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
+import contentful from '~/plugins/contentful.js'
+const client = contentful.createClient()
 
 export default {
   components: { AnimatedContainer, Quiz, Viewer, ObjectInput },
@@ -429,11 +449,16 @@ export default {
       const wind = this.tutorials.find(e => e.title == val)
       if (wind) wind.isOpen = true
       else {
-        const tutorial = this.tutorialData.find(e => e.title == val)
+        let tutorial = this.tutorialData.find(e => e.fields.title == val)
+        tutorial = {
+          isOpen: true,
+          openquiz: true,
+          steps: tutorial.fields.steps.map(e => e.fields),
+          quiz: tutorial.fields.quiz.map(e => Object.assign({}, e.fields)),
+          title: tutorial.fields.title
+        }
         tutorial.steps[0].open = true
-        this.tutorials.push(
-          Object.assign({}, tutorial, { isOpen: true, openquiz: true })
-        )
+        this.tutorials.push(tutorial)
       }
     },
     updateSteps() {
@@ -457,30 +482,38 @@ export default {
     },
     filterAnswerChange(index) {
       this.filters = this.filters.slice(0, index + 1)
-      const tags = this.filters.map(e => e.answer),
-        topic = Number(this.filters[0].answer)
+      const tags = this.filters.map(e => e.answer.sys.id),
+        topic = this.filters[0].answer.fields.title
       this.filteredLinks = this.resources.data.filter(
-        e => e.topics.includes(topic) && tags.some(v => e.tags.includes(v))
+        e =>
+          e.fields.topic.some(e => e.fields.title == topic) &&
+          e.fields.tags.some(e => tags.includes(e.sys.id))
       )
       const nextquiz = this.resources.questions
-        .filter(e => !this.filters.map(e => e.type).includes(e.type))
+        .filter(
+          e => !this.filters.map(e => e.type).includes(e.fields.type.sys.id)
+        )
         .sort((a, b) => {
           let an = 0,
             bn = 0
           this.filteredLinks
-            .map(e => e.tags)
+            .map(e => e.fields.tags)
             .forEach(e => {
               ;(an = e.reduce(
                 (o, v) =>
                   (o += this.resources.tags.filter(
-                    e => e.title == v && e.type == an.type
+                    e =>
+                      e.fields.title == v.fields.title &&
+                      e.fields.type.sys.id == a.fields.type.sys.id
                   ).length),
                 0
               )),
                 (bn = e.reduce(
                   (o, v) =>
                     (o += this.resources.tags.filter(
-                      e => e.title == v && e.type == bn.type
+                      e =>
+                        e.fields.title == v &&
+                        e.fields.type.sys.id == b.fields.type.sys.id
                     ).length),
                   0
                 ))
@@ -489,9 +522,11 @@ export default {
         })[0]
       if (nextquiz)
         this.filters.push({
-          type: nextquiz.type,
-          question: nextquiz.question,
-          answers: this.resources.tags.filter(e => e.type == nextquiz.type)
+          type: nextquiz.fields.type.sys.id,
+          question: nextquiz.fields.title,
+          answers: this.resources.tags.filter(
+            e => e.fields.type.sys.id == nextquiz.fields.type.sys.id
+          )
         })
     },
     showNotification(message, type, position) {
@@ -511,51 +546,45 @@ export default {
             req.headers.authorization = 'Bearer ' + window.sb233token
             return req
           },
-          url: process.env.hubSwaggerDataURL,
+          spec: this.spec,
           domNode: this.$refs.container,
           deepLinking: true
         })
       })
-    },
-    async loadTutorials() {
-      try {
-        this.tutorialData = (
-          await this.ServiceClient.getAsync(process.env.tutorialDataURL, {
-            headers: { 'secret-key': process.env.jsonbinSecret }
-          })
-        ).data
-      } catch (err) {
-        this.showNotification('Error fetching tutorials: ' + err.message)
-        console.error(err)
-      } finally {
-        this.isLoadingTutorial = false
-      }
-    },
-    async loadTopics() {
-      try {
-        this.resources = (
-          await this.ServiceClient.getAsync(process.env.topicDataURL, {
-            headers: { 'secret-key': process.env.jsonbinSecret }
-          })
-        ).data
-        this.filters = [
+    }
+  },
+  async asyncData({ error }) {
+    try {
+      const [tutorialdata, resources, openapis] = await Promise.all([
+        client.getEntries({ content_type: 'tutorialdata' }),
+        client.getEntries({ content_type: 'resources' }),
+        client.getEntries({ content_type: 'openapi' })
+      ])
+      const topics = resources.items[0].fields
+      const spec = openapis.items[0].fields.payload
+      return {
+        tutorialData: tutorialdata.items,
+
+        resources: topics,
+        spec,
+        filters: [
           {
-            question: this.resources.question || 'Test Test 233?',
-            answers: Object.entries(this.resources.topics).map(e => ({
-              title: e[1],
-              value: e[0]
-            }))
+            question: topics.question || 'Test Test 233?',
+            answers: topics.topics
           }
         ]
-      } catch (err) {
-        this.showNotification('Error fetching topics: ' + err.message)
-        console.error(err)
-      } finally {
-        this.isLoadingTopics = false
       }
+    } catch (err) {
+      error({ statusCode: 500, message: err.message })
     }
   },
   computed: {
+    isLoadingTutorial() {
+      return !(typeof this.tutorialData == 'object')
+    },
+    isLoadingTopics() {
+      return !(typeof this.resources == 'object')
+    },
     showWindBar() {
       return [...this.tutorials, ...this.viewers].some(e => !e.isOpen)
     },
@@ -586,7 +615,7 @@ export default {
             payload.jti &&
             payload.exp * 1000 > Date.now()
           )
-          if (result) window.sb233token = this.token
+          if(result) window.sb233token = this.token
           return result
         } catch (err) {
           console.log(err)
@@ -600,7 +629,6 @@ export default {
   },
   data() {
     return {
-      isLoadingTopics: true,
       resizeViewer: null,
       viewerOptionsModal: false,
       viewerOptions: [
@@ -620,7 +648,6 @@ export default {
         ]
       },
       useSameToken: true,
-      isLoadingTutorial: true,
       urn: '',
       guid: '',
       tutorials: [],
@@ -628,19 +655,16 @@ export default {
       sb: tools.getRandomString(),
       token: '',
       isOpen: true,
-      resources: [],
-      tutorialData: [],
-      filters: [],
       filteredLinks: [],
       swaggerUi: null
     }
   },
   mounted() {
+    this.documentToHtmlString = documentToHtmlString
     this.ServiceClient = new ServiceClient({ axios: this.$axios })
 
     this.loadSwagger()
-    this.loadTutorials()
-    this.loadTopics()
+
     this.$store.commit('setTitle', 'Tutorial & Playground')
   }
 }

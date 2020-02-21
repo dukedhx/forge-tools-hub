@@ -186,9 +186,9 @@
 </style>
 <script>
 import AnimatedContainer from '../components/AnimatedContainer'
-import ServiceClient from '../components/ServiceClient'
+import ServiceClient from '../plugins/ServiceClient'
 import StepContainer from '../components/StepContainer'
-import tools from '../components/Tools'
+import tools from '../plugins/Tools'
 import Loader from '../components/Loader'
 const defaultHeaders = {
   'session-id': ':sessionId',

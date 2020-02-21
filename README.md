@@ -55,7 +55,7 @@ You may also find sample code here to:
 |- components     // Vue and JS components
 |- layouts	      // Nuxt layout views
 |- middleware	    
-|- pages	        // Vue pages
+|- pages	        // Vue Viewes
 |- plugins	      // Service worker and lazy load plugin
 |- server
 |- static

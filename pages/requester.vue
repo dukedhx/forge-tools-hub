@@ -239,8 +239,8 @@
 import Menu from '../components/Menu'
 
 import AnimatedContainer from '../components/AnimatedContainer'
-import ServiceClient from '../components/ServiceClient'
-import tools from '../components/Tools'
+import ServiceClient from '../plugins/ServiceClient'
+import tools from '../plugins/Tools'
 import StepContainer from '../components/StepContainer'
 import ObjectInput from '../components/ObjectInput'
 import 'vue-json-viewer/style.css'

@@ -80,7 +80,7 @@
         :visible="questions.length - activeStep < 5"
         clickable
       >
-        <b-button @click="graded = true">Grade</b-button>
+        <b-button @click="grade">Grade</b-button>
         <b-button @click="reset">Reset</b-button>
       </b-step-item>
     </b-steps>
@@ -99,6 +99,10 @@
 <script>
 export default {
   methods: {
+    grade(){
+      this.grade=true
+      this.activeStep=0
+    },
     reset() {
       this.activeStep = 0
       this.graded = false

@@ -1,0 +1,8 @@
+{
+"build": {
+  "env": {
+    "CTF_SPACE_ID": "@contentspaceid",
+    "CTF_CDA_ACCESS_TOKEN": "@contentaccesstoken"
+  }
+  }
+}

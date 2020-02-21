@@ -1,5 +1,5 @@
 import tools from './Tools'
-import Zip from '../components/ZipHelper'
+import Zip from './ZipHelper'
 
 export default class {
   constructor({ axios, token, timeout }) {

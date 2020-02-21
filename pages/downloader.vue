@@ -193,10 +193,10 @@
 </style>
 <script>
 import AnimatedContainer from '../components/AnimatedContainer'
-import ServiceClient from '../components/ServiceClient'
+import ServiceClient from '../plugins/ServiceClient'
 import StepContainer from '../components/StepContainer'
 import Loader from '../components/Loader'
-import tools from '../components/Tools'
+import tools from '../plugins/Tools'
 import 'vue-json-viewer/style.css'
 const defaultHeaders = { Range: 'bytes=:start-:end' }
 export default {
