@@ -22,7 +22,8 @@
     "nuxt": "^2.0.0",
     "nuxt-buefy": "^0.3.21",
     "sass-loader": "^8.0.0",
-    "vue-json-viewer": "^2.2.8"
+    "vue-json-viewer": "^2.2.8",
+    "vue-mermaid": "0.0.12"
   },
   "devDependencies": {
     "@contentful/rich-text-html-renderer": "^13.4.0",

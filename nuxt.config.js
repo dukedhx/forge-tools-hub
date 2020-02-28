@@ -32,6 +32,7 @@ module.exports = {
   '~/plugins/loader',
   '~/plugins/jsonviewer',
    {src:'~/plugins/vue-window',ssr:false},
+   {src:'~/plugins/mermaid',ssr:false},
 
    //{src:'~/plugins/sw.js',ssr:false},
   ],

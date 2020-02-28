@@ -2,48 +2,181 @@
   <animated-container :customStyle="{ background: 'rgba(255, 255, 255, 0.9)' }">
     <b-tabs expanded>
       <b-tab-item label="Tutorial">
-        <b-field label="Course">
-          <b-select
-            :placeholder="isLoadingTutorial ? 'Loading ...' : 'Choose tutorial'"
-            :loading="isLoadingTutorial"
-            @input="startTutorial"
-            expanded
+        <b-collapse class="card noBackground tutorialCard">
+          <div
+            slot="trigger"
+            slot-scope="props"
+            class="card-header"
+            role="button"
           >
-            <option v-for="tutorial of tutorialData">{{
-              tutorial.fields.title
-            }}</option>
-          </b-select>
-        </b-field>
-        <b-field
-          label="Access Token"
-          :type="tokenValid ? 'is-success' : 'is-danger'"
-          :message="
-            !token || tokenValid ? '' : 'Access token is invalid or expired ...'
-          "
-        >
-          <b-input
-            :loading="isLoadingTutorial"
-            :disabled="isLoadingTutorial"
-            type="textarea"
-            v-model="token"
-            placeholder="Access token goes here ..."
-          ></b-input>
-        </b-field>
-        <b-field
-          label="Playground"
-          :message="
-            tokenValid
-              ? ''
-              : 'Put in a valid access token to begin - see tutorials for instructions...'
-          "
-          :type="tokenValid ? 'is-success' : 'is-danger'"
-        >
-          <section
-            class="swaggerContainer"
-            ref="container"
-            v-show="tokenValid"
-          ></section>
-        </b-field>
+            <p class="card-header-title">
+              Tutorial
+            </p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"> </b-icon>
+            </a>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <b-carousel
+                indicator-custom
+                :indicator-inside="false"
+                v-if="!isLoadingTutorial"
+              >
+                <b-carousel-item
+                  v-for="(tutorial, index) of tutorialData"
+                  :key="index"
+                >
+                  <div
+                    class="card"
+                    style="position: relative;min-height: 250px"
+                  >
+                    <div class="card-image">
+                      <figure
+                        class="image"
+                        style="overflow:hidden;height:500px;margin: 0!important"
+                      >
+                        <img
+                          style="width:100%"
+                          :src="tutorial.fields.coverimg"
+                          alt="Placeholder image"
+                        />
+                      </figure>
+                    </div>
+                    <div
+                      class="card-content"
+                      style="bottom: 5px;overflow: auto;
+                 max-height: 100%;
+                 background: rgba(0,0,0,0.8);
+                 position: absolute;color:#fff"
+                    >
+                      <div class="media">
+                        <div class="media-left">
+                          <figure
+                            class="image is-48x48"
+                            v-if="tutorial.fields.figureimg"
+                          >
+                            <img
+                              height="100%"
+                              width="auto"
+                              :src="tutorial.fields.figureimg"
+                              alt="Placeholder image"
+                            />
+                          </figure>
+                          <b-icon v-else icon="console"></b-icon>
+                        </div>
+                        <div class="media-content">
+                          <p class="title is-4" style=";color:#fff">
+                            {{ tutorial.fields.title }}
+                          </p>
+                          <p class="subtitle is-6">
+                            <a
+                              v-if="tutorial.fields.figureurl"
+                              :href="tutorial.fields.figureurl"
+                              target="_blank"
+                              >{{ tutorial.fields.figuretitle }}</a
+                            >
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="content">
+                        <section>
+                          {{ tutorial.fields.description }}
+                        </section>
+                        <section>
+                          <div style="float:right">
+                            <b-button
+                              type="is-info"
+                              @click="startTutorial(tutorial.fields.title)"
+                              >Start</b-button
+                            >
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                </b-carousel-item>
+                <template slot="indicators" slot-scope="props">
+                  <figure
+                    :draggable="false"
+                    style="overflow:hidden;height:50px;margin: 0!important"
+                  >
+                    <img
+                      :draggable="false"
+                      :src="tutorialData[props.i].fields.coverimg"
+                    />
+                  </figure>
+                </template>
+              </b-carousel>
+            </div>
+          </div>
+        </b-collapse>
+
+        <b-collapse class="card noBackground">
+          <div
+            slot="trigger"
+            slot-scope="props"
+            class="card-header"
+            role="button"
+          >
+            <p class="card-header-title">
+              Access Token
+            </p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"> </b-icon>
+            </a>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <b-field
+                :label="
+                  !token || tokenValid
+                    ? ''
+                    : 'Access token is invalid or expired ...'
+                "
+                :type="tokenValid ? 'is-success' : 'is-danger'"
+                label-position="on-border"
+              >
+                <b-input
+                  :loading="isLoadingTutorial"
+                  :disabled="isLoadingTutorial"
+                  type="textarea"
+                  v-model="token"
+                  placeholder="Access token goes here ..."
+                ></b-input>
+              </b-field>
+            </div>
+          </div>
+        </b-collapse>
+        <b-collapse class="card noBackground">
+          <div
+            slot="trigger"
+            slot-scope="props"
+            class="card-header"
+            role="button"
+          >
+            <p class="card-header-title">
+              Playground
+            </p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"> </b-icon>
+            </a>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <section v-if="!tokenValid">
+                Put in a valid access token to begin - see tutorials for
+                instructions...
+              </section>
+              <section
+                class="swaggerContainer"
+                ref="container"
+                v-show="tokenValid"
+              ></section>
+            </div>
+          </div>
+        </b-collapse>
       </b-tab-item>
       <b-tab-item label="Resource Finder">
         <b-loading
@@ -87,13 +220,23 @@
           </div>
         </b-collapse>
         <b-table :data="filteredLinks" class="noBackground" hoverable>
-          <template slot-scope="props">
-            <b-table-column label="Resource">
+          <template slot-scope="props" paginated :per-page="20">
+            <b-table-column
+              label="Resource"
+              field="fields.title"
+              sortable
+              searchable
+            >
               <a :href="props.row.url" target="_blank">{{
                 props.row.fields.title || props.row.fields.url
               }}</a>
             </b-table-column>
-            <b-table-column label="Type">
+            <b-table-column
+              label="Type"
+              field="fields.type"
+              sortable
+              searchable
+            >
               {{ props.row.fields.type }}
             </b-table-column>
             <b-table-column label="Tags">
@@ -206,6 +349,7 @@
             "${this.urn}",
             options)`
               : `Autodesk.Viewing.Document.load('urn:${this.urn}', doc =>{
+               viewer.start();
                viewer.loadDocumentNode(
                 doc,
                 doc.getRoot().search({ guid:${this.guid} })[0] ||
@@ -277,14 +421,15 @@
           loader
         ></Viewer>
       </hsc-window>
+
       <hsc-window
         v-for="(tutorial, index) of tutorials"
         :key="index"
         :title="tutorial.title"
         resizable
+        width="500"
+        height="500"
         isScrollable
-        :minWidth="500"
-        :minHeight="500"
         closeButton
         :isOpen.sync="tutorial.isOpen"
         class="fixed"
@@ -302,10 +447,15 @@
           </a>
           <b-collapse class="card" :key="sb" :open="!!step.open">
             <div class="card-content">
-              <div
-                class="content"
-                v-html="documentToHtmlString(step.content)"
-              ></div>
+              <div class="content">
+                <section v-html="documentToHtmlString(step.content)"></section>
+                <vue-mermaid
+                  v-if="step.graphdata"
+                  :nodes="step.graphdata"
+                  :type="step.graphtype || 'graph LR'"
+                  @nodeClick="nodeClick($event, step)"
+                ></vue-mermaid>
+              </div>
             </div>
             <footer class="card-footer">
               <b-button
@@ -328,7 +478,7 @@
           </b-collapse>
         </b-message>
         <b-message
-          v-if="tutorial.quiz"
+          v-if="tutorial.quiz && tutorial.quiz.length"
           title="Quiz"
           :closable="false"
           class="tutorialStep"
@@ -347,6 +497,13 @@
   </animated-container>
 </template>
 <style lang="scss" scoped>
+.tutorialCard {
+  .card {
+    .card-content {
+      width: 100%;
+    }
+  }
+}
 .fixed {
   position: fixed !important;
 }
@@ -377,6 +534,7 @@
 }
 .tutorialStep {
   position: relative;
+  min-width: 500px;
   &::v-deep .card-header-icon {
     position: absolute;
     color: #fff !important;
@@ -385,6 +543,12 @@
   }
 }
 .windows ::v-deep .window {
+  .titlebar {
+    padding: 0 !important;
+    .title {
+      margin: 5px !important;
+    }
+  }
   .viewerContainer {
     height: 100%;
   }
@@ -432,6 +596,9 @@ export default {
       this.viewerOptions = event.array
       this.viewerOptionsObj = event.obj
     },
+    nodeClick(node) {
+      console.log(node)
+    },
     closeWindow(index, array) {
       array.splice(index, 1)
     },
@@ -454,7 +621,9 @@ export default {
           isOpen: true,
           openquiz: true,
           steps: tutorial.fields.steps.map(e => e.fields),
-          quiz: tutorial.fields.quiz.map(e => Object.assign({}, e.fields)),
+          quiz: (tutorial.fields.quiz || []).map(e =>
+            Object.assign({}, e.fields)
+          ),
           title: tutorial.fields.title
         }
         tutorial.steps[0].open = true
@@ -615,7 +784,7 @@ export default {
             payload.jti &&
             payload.exp * 1000 > Date.now()
           )
-          if(result) window.sb233token = this.token
+          if (result) window.sb233token = this.token
           return result
         } catch (err) {
           console.log(err)
@@ -656,7 +825,28 @@ export default {
       token: '',
       isOpen: true,
       filteredLinks: [],
-      swaggerUi: null
+      swaggerUi: null,
+      graphdata: [
+        {
+          id: '1',
+          text: 'A',
+          link: '---',
+          url: 'http://sb.com',
+          next: ['2'],
+          group: 'one'
+        },
+        { id: '2', text: 'B', edgeType: 'circle', next: ['3'], group: 'one' },
+        { id: '3', text: 'C', next: ['4', '6'], group: 'two' },
+        {
+          id: '4',
+          text: 'D',
+          link: '-- This is the text ---',
+          next: ['5'],
+          group: 'two'
+        },
+        { id: '5', text: 'E', group: 'three' },
+        { id: '6', text: 'F', group: 'three' }
+      ]
     }
   },
   mounted() {

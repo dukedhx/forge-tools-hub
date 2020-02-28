@@ -302,16 +302,19 @@ export default {
       try {
         this.isDownloadingDerivatives = true
         this.zip = new Zip()
-        this.manifestDerivativeChildren
-          .find(e => e.guid == this.derivativeGUID)
-          .children.forEach(e => {
+        const derivative = this.manifestDerivativeChildren.find(e => e.guid == this.derivativeGUID)
+        if (derivative) {       
+          ([...(derivative.children||[]),{urn:derivative.urn}]).forEach(e => {
             if (e.urn)
               this.processDownloadResult(
                 e.urn,
                 this.ServiceClient.getDerivativesAsync(this.urn, e.urn)
               )
           })
+        } 
+        if(this.toSave)
         this.downloading = true
+        else this.showAlertMessage('Nothing to download for: ' + this.derivativeGUID)
       } catch (err) {
         console.log(err)
         this.showAlertMessage(err)
