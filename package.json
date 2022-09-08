@@ -29,7 +29,7 @@
     "@contentful/rich-text-html-renderer": "^13.4.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "jszip": "^3.2.2",
+    "jszip": "^3.7.0",
     "nodemon": "^1.18.9",
     "prettier": "^1.16.4"
   }
